@@ -1,0 +1,22 @@
+#debug: false
+logging:
+  pattern:
+    correlation: "[%X{traceId:-},%X{spanId:-}] "
+  level:
+    root: INFO
+spring:
+  shell:
+    interactive:
+      enabled: true
+  main:
+    web-application-type: "none"
+  application:
+    name: "command"
+server:
+  port: 8100
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"

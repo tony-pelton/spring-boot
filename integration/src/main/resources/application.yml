@@ -1,0 +1,19 @@
+server:
+  port: 8101
+logging:
+  pattern:
+    correlation: "[%X{traceId:-},%X{spanId:-}] "
+  level:
+    root: INFO
+    web: DEBUG
+    sql: DEBUG
+    tomcat: DEBUG
+spring:
+  application:
+    name: integration
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
