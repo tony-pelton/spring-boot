@@ -2,13 +2,15 @@ package com.dsrts.web.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SourceType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "cart_item")
 public class CartItemEntity {
     @Id
@@ -24,7 +26,11 @@ public class CartItemEntity {
     @Column(nullable = false)
     private Integer qty;
 
-    @CreationTimestamp(source = SourceType.VM)
+    @CreatedDate
     @Column(nullable = false)
     private Instant createdOn;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedOn;
 }

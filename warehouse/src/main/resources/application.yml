@@ -1,5 +1,6 @@
+#debug: true
 server:
-  port: 8101
+  port: 8090
 logging:
   pattern:
     correlation: "[%X{traceId:-},%X{spanId:-}] "
@@ -9,13 +10,16 @@ logging:
     sql: DEBUG
     tomcat: DEBUG
 spring:
-  application:
-    name: integration
+  data:
+    rest:
+      base-path: /api
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
   datasource:
-    url: jdbc:h2:tcp://localhost/mem:integration
-    sql:
-      init:
-        continue-on-error: true
+    url: jdbc:h2:tcp://localhost/mem:warehouse
+  application:
+    name: warehouse
 management:
   endpoints:
     enabled-by-default: true

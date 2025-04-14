@@ -1,16 +1,13 @@
-package com.dsrts.web;
+package com.dsrts.warehouse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-public class WebApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(WebApplication.class, args);
-	}
-
+public class WarehouseApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WarehouseApplication.class, args);
+    }
 }

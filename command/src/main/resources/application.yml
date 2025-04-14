@@ -3,7 +3,7 @@ logging:
   pattern:
     correlation: "[%X{traceId:-},%X{spanId:-}] "
   level:
-    root: INFO
+    root: ERROR
 spring:
   shell:
     interactive:

@@ -10,9 +10,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>web</artifactId>
-    <name>web</name>
-    <description>web service</description>
+    <artifactId>warehouse</artifactId>
+    <name>warehouse</name>
+    <description>warehouse service</description>
 
     <dependencies>
         <dependency>

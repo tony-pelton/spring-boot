@@ -1,4 +1,4 @@
-package com.dsrts.web.entities;
+package com.dsrts.warehouse.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,12 +18,6 @@ public class BookEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(unique = true,nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String author;
-
     @ISBN
     @Column(unique = true,nullable = false,length = 17)
     private String isbn;
@@ -35,4 +29,5 @@ public class BookEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private Instant updatedOn;
+
 }

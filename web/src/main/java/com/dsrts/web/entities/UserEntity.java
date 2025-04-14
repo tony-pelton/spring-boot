@@ -3,14 +3,16 @@ package com.dsrts.web.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SourceType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.Set;
 
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -27,7 +29,11 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private Set<CartEntity> cartEntitySet;
 
-    @CreationTimestamp(source = SourceType.VM)
+    @CreatedDate
     @Column(nullable = false)
     private Instant createdOn;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedOn;
 }
