@@ -49,23 +49,21 @@ public class BookService {
         messageStore.addMessageToGroup(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE, message);
     }
 
-    @Async
     @Transactional
-    public CompletableFuture<Boolean> processBookWebMessage() {
+    public boolean processBookWebMessage() {
         Message<Map<String,String>> message = (Message<Map<String,String>>)messageStore.pollMessageFromGroup(ChannelConfiguration.BOOK_WEB_MESSAGE);
         log.info("processBookWebMessage() : {}", message);
         return processBookMessage(message, webBooks);
     }
 
-    @Async
     @Transactional
-    public CompletableFuture<Boolean> processBookWarehouseMessage() {
+    public boolean processBookWarehouseMessage() {
         Message<Map<String,String>> message = (Message<Map<String,String>>)messageStore.pollMessageFromGroup(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE);
         log.info("processBookWarehouseMessage() : {}", message);
         return processBookMessage(message,warehouseBooks);
     }
 
-    private CompletableFuture<Boolean> processBookMessage(Message<Map<String,String>> message, BooksServiceAPI booksServiceAPI) {
+    private boolean processBookMessage(Message<Map<String,String>> message, BooksServiceAPI booksServiceAPI) {
         if (null != message) {
 
             /*
@@ -80,10 +78,10 @@ public class BookService {
                 }
             }
 
-            return CompletableFuture.completedFuture(Boolean.TRUE);
+            return true;
         } else {
 
-            return CompletableFuture.completedFuture(Boolean.FALSE);
+            return false;
         }
     }
 }

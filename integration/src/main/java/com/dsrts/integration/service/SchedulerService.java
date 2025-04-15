@@ -20,28 +20,26 @@ public class SchedulerService {
     private final BookService bookService;
 
     @Scheduled(fixedDelay = 5000)
-    public void processBookMessages() {
+    public void processBookWebMessages() {
 
-        List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
-        {
-            int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WEB_MESSAGE);
-            for (int i = 0; i < count; i++) {
-                completableFutures.add(bookService.processBookWebMessage());
+        int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WEB_MESSAGE);
+        log.info("processBookWebMessages() count={}", count);
+        for (int i = 0; i < count; i++) {
+            if (!bookService.processBookWebMessage()) {
+                return;
             }
         }
-        {
-            int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE);
-            for (int i = 0; i < count; i++) {
-                completableFutures.add(bookService.processBookWarehouseMessage());
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void processBookWarehouseMessages() {
+
+        int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE);
+        log.info("processBookWarehouseMessages() count={}", count);
+        for (int i = 0; i < count; i++) {
+            if (!bookService.processBookWarehouseMessage()) {
+                return;
             }
         }
-
-        completableFutures.forEach(booleanCompletableFuture -> {
-            try {
-                booleanCompletableFuture.get();
-            } catch (Exception e) {
-                log.error("processBookMessages()",e);
-            }
-        });
     }
 }

@@ -6,9 +6,13 @@ logging:
   level:
     root: INFO
     web: DEBUG
-    sql: DEBUG
+#    sql: DEBUG
     tomcat: DEBUG
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 5
   application:
     name: integration
   datasource:
