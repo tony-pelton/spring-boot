@@ -1,7 +1,9 @@
 package com.dsrts.web.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,7 +11,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"customer", "cartItems"})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "carts")
@@ -19,9 +23,9 @@ public class CartEntity {
     private Long id;
 
     @ManyToOne
-    private UserEntity user;
+    private CustomerEntity customer;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItemEntity> cartItems;
 
     @CreatedDate

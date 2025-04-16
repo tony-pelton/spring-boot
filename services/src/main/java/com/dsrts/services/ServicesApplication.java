@@ -2,7 +2,6 @@ package com.dsrts.services;
 
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.h2.tools.Server;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;

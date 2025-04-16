@@ -6,8 +6,8 @@ import org.springframework.web.service.annotation.PostExchange;
 
 import java.util.Map;
 
-@HttpExchange("/api/user")
-public interface Users {
+@HttpExchange("/api/customer")
+public interface Customers {
     @PostExchange
-    void add(@RequestBody Map<String,String> user);
+    void add(@RequestBody Map<String,String> customer);
 }

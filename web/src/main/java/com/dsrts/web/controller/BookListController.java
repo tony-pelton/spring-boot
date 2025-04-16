@@ -34,4 +34,5 @@ public class BookListController {
         model.addAttribute("reverseSortOrder", pageable.getSort().iterator().hasNext() && pageable.getSort().iterator().next().getDirection() == Sort.Direction.ASC ? "desc" : "asc");
 
         return "/books/list";
-    }}
+    }
+}

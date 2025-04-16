@@ -6,7 +6,15 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h1>Book List</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Book List</h1>
+        <a href="/cart" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart me-2" viewBox="0 0 16 16">
+                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            View Cart
+        </a>
+    </div>
     <p th:if="${totalItems == 0}">No books available.</p>
     <div th:if="${totalItems > 0}">
         <table class="table table-striped">
@@ -21,7 +29,7 @@
             </thead>
             <tbody>
             <tr th:each="book : ${books}">
-                <td th:text="${book.title}"></td>
+                <td><a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"></a></td>
                 <td th:text="${book.author}"></td>
                 <td th:text="${book.isbn}"></td>
 <!--                <td th:text="${#temporals.format(book.createdOn, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
@@ -49,6 +57,6 @@
     </div>
 </div>
 
-<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.5/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

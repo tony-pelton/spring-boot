@@ -7,6 +7,7 @@ logging:
     web: DEBUG
     sql: DEBUG
     tomcat: DEBUG
+    org.springframework.security: DEBUG
 spring:
   data:
     rest:
@@ -17,6 +18,9 @@ spring:
       ddl-auto: update
   datasource:
     url: jdbc:h2:tcp://localhost/mem:web
+    sql:
+      init:
+        continue-on-error: true
   application:
     name: web
 management:

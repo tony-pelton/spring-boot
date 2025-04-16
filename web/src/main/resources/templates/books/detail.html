@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Details</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.5/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <a th:href="@{/books}" class="btn btn-secondary mb-3">&larr; Back to List</a>
+            
+            <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
+                Success message here
+            </div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+                Error message here
+            </div>
+            <div th:if="${info}" class="alert alert-info" role="alert" th:text="${info}">
+                Info message here
+            </div>
+            <div th:if="${warning}" class="alert alert-warning" role="alert" th:text="${warning}">
+                Warning message here
+            </div>
+            
+            <h1>Book Details</h1>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${book.title}">Book Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${book.author}">Author Name</h6>
+                    
+                    <div class="mt-4">
+                        <p><strong>ISBN:</strong> <span th:text="${book.isbn}"></span></p>
+                        <p><strong>Last Updated:</strong> <span th:text="${#temporals.format(book.updatedOn, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                        <p th:if="${book.createdOn}"><strong>Created On:</strong> <span th:text="${#temporals.format(book.createdOn, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                    </div>
+
+                    <form th:action="@{/cart/add}" method="post" class="mt-4">
+                        <input type="hidden" name="bookId" th:value="${book.id}" />
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                   value="1" min="1" max="99" style="max-width: 100px"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.5/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.5/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <a th:href="@{/books}" class="btn btn-secondary mb-3">&larr; Back to Books</a>
+            
+            <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
+                Success message here
+            </div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+                Error message here
+            </div>
+            
+            <h1>Shopping Cart</h1>
+            
+            <div th:if="${cart.cartItems.empty}" class="alert alert-info">
+                Your cart is empty. <a th:href="@{/books}">Browse books</a> to add items to your cart.
+            </div>
+            
+            <div th:if="${!cart.cartItems.empty}" class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Book</th>
+                                    <th>Author</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${cart.cartItems}">
+                                    <td>
+                                        <a th:href="@{/books/{id}(id=${item.book.id})}" 
+                                           th:text="${item.book.title}">Book Title</a>
+                                    </td>
+                                    <td th:text="${item.book.author}">Author Name</td>
+                                    <td class="text-center" th:text="${item.qty}">1</td>
+                                    <td class="text-end">
+                                        <!-- TODO: Add update/remove functionality -->
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="text-end mt-3">
+                        <!-- TODO: Add checkout functionality -->
+                        <a href="#" class="btn btn-primary">
+                            Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.5/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

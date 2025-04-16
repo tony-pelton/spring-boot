@@ -67,7 +67,7 @@ public class BookService {
         if (null != message) {
 
             /*
-            assume 4XX errors will never work be accepted by the target.
+            assume 4XX errors will never work or be accepted by the target.
              */
             try {
                 booksServiceAPI.add(message.getPayload());
