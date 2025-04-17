@@ -53,6 +53,7 @@ currently is loaded from the 'command' application.
 * spring integration
 * spring command line
 * Maven multi-module, to kinda tie the room together.
+* Given a Gemini API key, the 'integration' service will enrich book data with a summary.
 
 ### How To
 
@@ -75,3 +76,15 @@ Finally, the 'web' server, which is the storefront.
 Then the 'command' server. For right now, this only needs to be running
 when, well, you need to issue commands. As of this writing, it has a
 couple of commands that are used to bootstrap some data into the system.
+
+The command server knows two commands right now. Type 'help' to see them.
+
+Once discovery is warmed up, run the 'load-books' and 'load-users' commands to
+to get some fake data loaded.
+
+You have to have run 'load-users' in order to login to the webapp.
+
+### Notes
+
+* if you want the Gemini integration to work, add your own apikey to the
+application.yml for the integration service.

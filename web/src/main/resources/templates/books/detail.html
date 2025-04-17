@@ -29,7 +29,11 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${book.title}">Book Title</h5>
                     <h6 class="card-subtitle mb-2 text-muted" th:text="${book.author}">Author Name</h6>
-                    
+
+                    <div th:if="${book.summary}" class="alert alert-info mt-3" style="white-space: pre-line;">
+                        <strong>Summary:</strong>
+                        <div th:text="${book.summary}"></div>
+                    </div>
                     <div class="mt-4">
                         <p><strong>ISBN:</strong> <span th:text="${book.isbn}"></span></p>
                         <p><strong>Last Updated:</strong> <span th:text="${#temporals.format(book.updatedOn, 'yyyy-MM-dd HH:mm:ss')}"></span></p>

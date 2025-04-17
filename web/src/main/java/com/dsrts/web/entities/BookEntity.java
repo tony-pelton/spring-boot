@@ -1,7 +1,6 @@
 package com.dsrts.web.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.ISBN;
@@ -38,4 +37,7 @@ public class BookEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private Instant updatedOn;
+
+    @Column(columnDefinition = "TEXT")
+    private String summary;
 }

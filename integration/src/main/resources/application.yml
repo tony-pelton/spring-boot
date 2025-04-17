@@ -1,3 +1,6 @@
+
+apikey:
+
 server:
   port: 8101
 logging:

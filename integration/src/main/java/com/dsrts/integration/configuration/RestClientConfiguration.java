@@ -1,7 +1,8 @@
 package com.dsrts.integration.configuration;
 
 import com.dsrts.integration.clients.BooksServiceAPI;
-import io.micrometer.tracing.Tracer;
+
+import com.dsrts.integration.clients.GeminiServiceAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.loadbalancer.*;
 import org.springframework.context.annotation.Bean;
@@ -67,6 +68,21 @@ public class RestClientConfiguration {
         return HttpServiceProxyFactory
                 .builderFor(restClientAdapter)
                 .build();
+    }
+
+    @Bean
+public HttpServiceProxyFactory httpServiceProxyFactoryGemini(JdkClientHttpRequestFactory requestFactory) {
+        RestClient restClient = RestClient.builder()
+                .baseUrl("https://generativelanguage.googleapis.com/")
+                .requestFactory(requestFactory)
+                .build();
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        return HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+    }
+
+    @Bean
+    public GeminiServiceAPI geminiServiceAPI(@Qualifier("httpServiceProxyFactoryGemini") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(GeminiServiceAPI.class);
     }
 
     @Bean
