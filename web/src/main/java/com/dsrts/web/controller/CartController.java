@@ -28,25 +28,28 @@ public class CartController {
     @PostMapping("/cart/add")
     public String addToCart(@ModelAttribute CartItemRequest request, RedirectAttributes redirectAttributes) {
         try {
-            // Validate the book exists
-            BookEntity book = bookRepository.findById(request.getBookId())
-                    .orElseGet(() -> {
-                        redirectAttributes.addFlashAttribute("error", "Book not found");
-                        return null;
-                    });
+            if (request.getQuantity() < 1 || request.getQuantity() > 5) {
+                redirectAttributes.addFlashAttribute("error", "Quantity must be between 1 and 5.");
+            } else {
 
-            if (book == null) {
-                return "redirect:/books";
+                // Validate the book exists
+                BookEntity book = bookRepository.findById(request.getBookId())
+                        .orElse(null);
+
+                if (book == null) {
+                    redirectAttributes.addFlashAttribute("error", "Book not found");
+                    return "redirect:/books";
+                }
+
+                cartService.addToCart(book, request.getQuantity());
+                redirectAttributes.addFlashAttribute("success",
+                        String.format("Added %d item(s) to cart", request.getQuantity()));
             }
 
-            cartService.addToCart(book, request.getQuantity());
-            redirectAttributes.addFlashAttribute("success", 
-                String.format("Added %d item(s) to cart", request.getQuantity()));
-            
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        
+
         return "redirect:/books/" + request.getBookId();
     }
 }

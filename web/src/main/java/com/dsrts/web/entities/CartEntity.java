@@ -18,11 +18,17 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "carts")
 public class CartEntity {
+    public enum CartStatus {
+        OPEN,
+        ORDERED,
+        SHIPPED
+    }
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private CustomerEntity customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,4 +41,8 @@ public class CartEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private Instant updatedOn;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CartStatus status = CartStatus.OPEN;
 }

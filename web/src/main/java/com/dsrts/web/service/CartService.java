@@ -5,34 +5,48 @@ import com.dsrts.web.entities.CartEntity;
 import com.dsrts.web.entities.CartItemEntity;
 import com.dsrts.web.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Optional;
+
+import com.dsrts.web.repository.CustomerRepository;
+import com.dsrts.web.entities.CustomerEntity;
 
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
     private final CartRepository cartRepository;
+    private final CustomerRepository customerRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CartEntity getCurrentCart() {
-        // TODO: Replace with actual user's cart once authentication is implemented
-        return cartRepository.findAll().stream()
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserDetails principal = (UserDetails)authentication.getPrincipal();
+
+        Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findByEmail(principal.getUsername());
+        CustomerEntity customer = optionalCustomerEntity.get();
+
+        return customer.getCarts().stream()
+                .filter(cartEntity -> CartEntity.CartStatus.OPEN.equals(cartEntity.getStatus()))
                 .findFirst()
                 .orElseGet(() -> {
                     CartEntity newCart = new CartEntity();
                     newCart.setCartItems(new HashSet<>());
+                    newCart.setCustomer(customer);
                     return cartRepository.save(newCart);
                 });
     }
 
     @Transactional
     public CartItemEntity addToCart(BookEntity book, int quantity) {
-        if (quantity < 1 || quantity > 99) {
-            throw new IllegalArgumentException("Quantity must be between 1 and 99");
-        }
 
         CartEntity cart = getCurrentCart();
 
@@ -49,9 +63,8 @@ public class CartService {
                 });
 
         cartItem.setQty(cartItem.getQty() + quantity);
-        return cartRepository.save(cart).getCartItems().stream()
-                .filter(item -> item.getBook().getId().equals(book.getId()))
-                .findFirst()
-                .orElseThrow();
+        cartRepository.save(cart);
+
+        return cartItem;
     }
 }
