@@ -16,10 +16,25 @@ import java.util.HashMap;
 @Configuration
 public class EndpointConfiguration {
     @Bean
-    public HttpRequestHandlingMessagingGateway httpInboundGateway(@Qualifier(ChannelConfiguration.BOOK_GATEWAY_IN_CHANNEL) PublishSubscribeChannel requestChannel) {
+    public HttpRequestHandlingMessagingGateway httpInboundBookGateway(@Qualifier(ChannelConfiguration.BOOK_GATEWAY_IN_CHANNEL) PublishSubscribeChannel requestChannel) {
         HttpRequestHandlingMessagingGateway gateway = new HttpRequestHandlingMessagingGateway(false); // One-way
         RequestMapping mapping = new RequestMapping();
         mapping.setPathPatterns("/api/book");
+        mapping.setMethods(HttpMethod.POST);
+        gateway.setRequestMapping(mapping);
+        gateway.setRequestPayloadType(ResolvableType.forInstance(new HashMap<String,String>()));
+        gateway.setRequestChannel(requestChannel);
+        SpelExpressionParser expressionParser = new SpelExpressionParser();
+        Expression expression = expressionParser.parseExpression("200");
+        gateway.setStatusCodeExpression(expression);
+        return gateway;
+    }
+
+    @Bean
+    public HttpRequestHandlingMessagingGateway httpInboundCustomerGateway(@Qualifier(ChannelConfiguration.CUSTOMER_GATEWAY_IN_CHANNEL) PublishSubscribeChannel requestChannel) {
+        HttpRequestHandlingMessagingGateway gateway = new HttpRequestHandlingMessagingGateway(false); // One-way
+        RequestMapping mapping = new RequestMapping();
+        mapping.setPathPatterns("/api/customer");
         mapping.setMethods(HttpMethod.POST);
         gateway.setRequestMapping(mapping);
         gateway.setRequestPayloadType(ResolvableType.forInstance(new HashMap<String,String>()));

@@ -7,10 +7,6 @@ import org.springframework.integration.jdbc.store.JdbcChannelMessageStore;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -18,6 +14,7 @@ public class SchedulerService {
 
     private final JdbcChannelMessageStore messageStore;
     private final BookService bookService;
+    private final CustomerService customerService;
 
     @Scheduled(fixedDelay = 5000)
     public void processBookWebMessages() {
@@ -42,6 +39,34 @@ public class SchedulerService {
         }
         for (int i = 0; i < count; i++) {
             if (!bookService.processBookWarehouseMessage()) {
+                return;
+            }
+        }
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void processCustomerWebMessages() {
+
+        int count = messageStore.messageGroupSize(ChannelConfiguration.CUSTOMER_WEB_MESSAGE);
+        if(0 < count) {
+            log.info("processCustomerWebMessages() count={}", count);
+        }
+        for (int i = 0; i < count; i++) {
+            if (!customerService.processCustomerWebMessage()) {
+                return;
+            }
+        }
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void processCustomerWarehouseMessages() {
+
+        int count = messageStore.messageGroupSize(ChannelConfiguration.CUSTOMER_WAREHOUSE_MESSAGE);
+        if(0 < count) {
+            log.info("processCustomerWarehouseMessages() count={}", count);
+        }
+        for (int i = 0; i < count; i++) {
+            if (!customerService.processCustomerWarehouseMessage()) {
                 return;
             }
         }

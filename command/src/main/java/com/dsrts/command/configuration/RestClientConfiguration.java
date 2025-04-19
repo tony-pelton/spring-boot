@@ -41,21 +41,6 @@ public class RestClientConfiguration {
     }
 
     @Bean
-    public HttpServiceProxyFactory httpServiceProxyFactoryWeb(RestClient.Builder restClientBuilder, JdkClientHttpRequestFactory requestFactory) {
-
-        RestClient restClient = restClientBuilder
-                .baseUrl("http://web")
-                .requestFactory(requestFactory)
-                .build();
-
-        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
-
-        return HttpServiceProxyFactory
-                .builderFor(restClientAdapter)
-                .build();
-    }
-
-    @Bean
     public HttpServiceProxyFactory httpServiceProxyFactoryIntegration(RestClient.Builder restClientBuilder, JdkClientHttpRequestFactory requestFactory) {
 
         RestClient restClient = restClientBuilder
@@ -76,7 +61,7 @@ public class RestClientConfiguration {
     }
 
     @Bean
-    public Customers restClientCustomers(@Qualifier("httpServiceProxyFactoryWeb") HttpServiceProxyFactory httpServiceProxyFactory) {
+    public Customers restClientCustomers(@Qualifier("httpServiceProxyFactoryIntegration") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(Customers.class);
     }
 }

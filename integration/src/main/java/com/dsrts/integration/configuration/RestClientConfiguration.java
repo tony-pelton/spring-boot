@@ -2,6 +2,7 @@ package com.dsrts.integration.configuration;
 
 import com.dsrts.integration.clients.BooksServiceAPI;
 
+import com.dsrts.integration.clients.CustomersServiceAPI;
 import com.dsrts.integration.clients.GeminiServiceAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.loadbalancer.*;
@@ -17,6 +18,12 @@ import java.time.Duration;
 
 @Configuration
 public class RestClientConfiguration {
+
+    public static final String REST_CLIENT_WEB_CUSTOMERS = "restClientWebCustomers";
+    public static final String REST_CLIENT_WAREHOUSE_CUSTOMERS = "restClientWarehouseCustomers";
+    public static final String REST_CLIENT_WEB_BOOKS = "restClientWebBooks";
+    public static final String REST_CLIENT_WAREHOUSE_BOOKS = "restClientWarehouseBooks";
+    public static final String REST_CLIENT_GEMINI = "restClientGemini";
 
     @LoadBalanced
     @Bean
@@ -80,19 +87,29 @@ public HttpServiceProxyFactory httpServiceProxyFactoryGemini(JdkClientHttpReques
         return HttpServiceProxyFactory.builderFor(restClientAdapter).build();
     }
 
-    @Bean
-    public GeminiServiceAPI geminiServiceAPI(@Qualifier("httpServiceProxyFactoryGemini") HttpServiceProxyFactory httpServiceProxyFactory) {
+    @Bean(REST_CLIENT_GEMINI)
+    public GeminiServiceAPI restClientGemini(@Qualifier("httpServiceProxyFactoryGemini") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(GeminiServiceAPI.class);
     }
 
-    @Bean
+    @Bean(REST_CLIENT_WAREHOUSE_BOOKS)
     public BooksServiceAPI restClientWarehouseBooks(@Qualifier("httpServiceProxyFactoryWarehouse") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(BooksServiceAPI.class);
     }
 
-    @Bean
+    @Bean(REST_CLIENT_WEB_BOOKS)
     public BooksServiceAPI restClientWebBooks(@Qualifier("httpServiceProxyFactoryWeb") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(BooksServiceAPI.class);
+    }
+
+    @Bean(REST_CLIENT_WAREHOUSE_CUSTOMERS)
+    public CustomersServiceAPI restClientWarehouseCustomers(@Qualifier("httpServiceProxyFactoryWarehouse") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(CustomersServiceAPI.class);
+    }
+
+    @Bean(REST_CLIENT_WEB_CUSTOMERS)
+    public CustomersServiceAPI restClientWebCustomers(@Qualifier("httpServiceProxyFactoryWeb") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(CustomersServiceAPI.class);
     }
 
 }

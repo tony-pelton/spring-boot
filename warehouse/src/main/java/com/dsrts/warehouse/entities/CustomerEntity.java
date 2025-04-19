@@ -3,7 +3,6 @@ package com.dsrts.warehouse.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.ISBN;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,15 +13,11 @@ import java.time.Instant;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "books")
-public class BookEntity {
+@Table(name = "customers")
+public class CustomerEntity {
     @Id
     @GeneratedValue
     private Long id;
-
-    @ISBN
-    @Column(unique = true,nullable = false,length = 17)
-    private String isbn;
 
     @CreatedDate
     @Column(nullable = false)

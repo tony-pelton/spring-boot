@@ -5,6 +5,7 @@ import com.dsrts.integration.clients.GeminiServiceAPI;
 import com.dsrts.integration.clients.GeminiContentRequest;
 import com.dsrts.integration.clients.GeminiContentResponse;
 import com.dsrts.integration.configuration.ChannelConfiguration;
+import com.dsrts.integration.configuration.RestClientConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +38,9 @@ public class BookService {
     }
 
     public BookService(JdbcChannelMessageStore messageStore,
-                       @Qualifier("restClientWebBooks") BooksServiceAPI webBooks,
-                       @Qualifier("restClientWarehouseBooks") BooksServiceAPI warehouseBooks,
-                       @Qualifier("geminiServiceAPI") GeminiServiceAPI geminiServiceAPI)
+                       @Qualifier(RestClientConfiguration.REST_CLIENT_WEB_BOOKS) BooksServiceAPI webBooks,
+                       @Qualifier(RestClientConfiguration.REST_CLIENT_WAREHOUSE_BOOKS) BooksServiceAPI warehouseBooks,
+                       @Qualifier(RestClientConfiguration.REST_CLIENT_GEMINI) GeminiServiceAPI geminiServiceAPI)
     {
         this.messageStore = messageStore;
         this.webBooks = webBooks;
@@ -63,22 +64,6 @@ public class BookService {
         messageStore.addMessageToGroup(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE, message);
     }
 
-    @Transactional
-    public boolean processBookWebMessage() {
-        Message<Map<String,String>> message = (Message<Map<String,String>>)messageStore.pollMessageFromGroup(ChannelConfiguration.BOOK_WEB_MESSAGE);
-        log.info("processBookWebMessage() : {}", message);
-        if (StringUtils.hasLength(apiKey) && message != null && message.getPayload() != null) {
-            Map<String, String> payload = message.getPayload();
-            if (StringUtils.hasLength(apiKey)) {
-                String summary = getGeminiSummary(payload);
-                payload.put("summary", summary.trim());
-            } else {
-                payload.put("summary", "If you were using a Gemini API key, you'd see a cool summary here.");
-            }
-        }
-        return processBookMessage(message, webBooks);
-    }
-
     private String getGeminiSummary(Map<String, String> payload) {
         String title = payload.getOrDefault("title", "");
         // Build Gemini API request POJO
@@ -97,6 +82,22 @@ public class BookService {
             }
         }
         return summary;
+    }
+
+    @Transactional
+    public boolean processBookWebMessage() {
+        Message<Map<String,String>> message = (Message<Map<String,String>>)messageStore.pollMessageFromGroup(ChannelConfiguration.BOOK_WEB_MESSAGE);
+        log.info("processBookWebMessage() : {}", message);
+        if (StringUtils.hasLength(apiKey) && message != null && message.getPayload() != null) {
+            Map<String, String> payload = message.getPayload();
+            if (StringUtils.hasLength(apiKey)) {
+                String summary = getGeminiSummary(payload);
+                payload.put("summary", summary.trim());
+            } else {
+                payload.put("summary", "If you were using a Gemini API key, you'd see a cool summary here.");
+            }
+        }
+        return processBookMessage(message, webBooks);
     }
 
     @Transactional
