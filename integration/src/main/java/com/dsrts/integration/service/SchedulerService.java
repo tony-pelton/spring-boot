@@ -23,7 +23,9 @@ public class SchedulerService {
     public void processBookWebMessages() {
 
         int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WEB_MESSAGE);
-        log.info("processBookWebMessages() count={}", count);
+        if(0 < count) {
+            log.info("processBookWebMessages() count={}", count);
+        }
         for (int i = 0; i < count; i++) {
             if (!bookService.processBookWebMessage()) {
                 return;
@@ -35,7 +37,9 @@ public class SchedulerService {
     public void processBookWarehouseMessages() {
 
         int count = messageStore.messageGroupSize(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE);
-        log.info("processBookWarehouseMessages() count={}", count);
+        if(0 < count) {
+            log.info("processBookWarehouseMessages() count={}", count);
+        }
         for (int i = 0; i < count; i++) {
             if (!bookService.processBookWarehouseMessage()) {
                 return;

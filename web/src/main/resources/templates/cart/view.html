@@ -56,12 +56,78 @@
                     
                     <div class="text-end mt-3">
                         <!-- TODO: Add checkout functionality -->
-                        <a href="#" class="btn btn-primary">
-                            Proceed to Checkout
-                        </a>
+                        <form th:action="@{/cart/checkout}" method="post">
+                            <button type="submit" class="btn btn-primary">
+                                Proceed to Checkout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
+
+            <!-- ORDERED Carts -->
+            <div th:if="${not #lists.isEmpty(orderedCarts)}" class="card mt-4">
+                <div class="card-header">
+                    <h2>Previous Orders</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order Date</th>
+                                    <th>Total Items</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cart : ${orderedCarts}">
+                                    <td th:text="${#dates.format(cart.createdOn, 'yyyy-MM-dd HH:mm')}">2023-04-17 22:27</td>
+                                    <td th:text="${cart.cartItems.size()}">3</td>
+                                    <td>
+                                        <span class="badge bg-warning">Ordered</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHIPPED Carts -->
+            <div th:if="${not #lists.isEmpty(shippedCarts)}" class="card mt-4">
+                <div class="card-header">
+                    <h2>Shipped Orders</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Shipped Date</th>
+                                    <th>Total Items</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cart : ${shippedCarts}">
+                                    <td th:text="${#dates.format(cart.createdOn, 'yyyy-MM-dd HH:mm')}">2023-04-17 22:27</td>
+                                    <td th:text="${cart.cartItems.size()}">3</td>
+                                    <td>
+                                        <span class="badge bg-success">Shipped</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty sections message -->
+            <div th:if="${#lists.isEmpty(orderedCarts) and #lists.isEmpty(shippedCarts)}" class="alert alert-info mt-4">
+                No previous orders found.
+            </div>
+
         </div>
     </div>
 </div>

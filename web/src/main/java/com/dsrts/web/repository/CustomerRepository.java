@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "customers", path = "customer")
 public interface CustomerRepository extends JpaRepository<CustomerEntity,Long> {
-    public Optional<CustomerEntity> findByEmail(String mail);
+    public Optional<CustomerEntity> findByEmail(String email);
 }

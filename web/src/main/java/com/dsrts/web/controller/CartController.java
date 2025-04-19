@@ -2,6 +2,7 @@ package com.dsrts.web.controller;
 
 import com.dsrts.web.dto.CartItemRequest;
 import com.dsrts.web.entities.BookEntity;
+import com.dsrts.web.entities.CartEntity;
 import com.dsrts.web.repository.BookRepository;
 import com.dsrts.web.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,22 @@ public class CartController {
 
     @GetMapping("/cart")
     public String viewCart(Model model) {
-        model.addAttribute("cart", cartService.getCurrentCart());
+        model.addAttribute("cart", cartService.getOpenCart());
+        var groupedCarts = cartService.getCartsGroupedByStatus();
+        model.addAttribute("orderedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.ORDERED, java.util.Collections.emptyList()));
+        model.addAttribute("shippedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.SHIPPED, java.util.Collections.emptyList()));
         return "cart/view";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String checkout(RedirectAttributes redirectAttributes) {
+        try {
+            cartService.checkout();
+            redirectAttributes.addFlashAttribute("success", "Order placed successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to place order: " + e.getMessage());
+        }
+        return "redirect:/books";
     }
 
     @PostMapping("/cart/add")
