@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class CartController {
@@ -24,8 +26,8 @@ public class CartController {
     public String viewCart(Model model) {
         model.addAttribute("cart", cartService.getOpenCart());
         var groupedCarts = cartService.getCartsGroupedByStatus();
-        model.addAttribute("orderedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.ORDERED, java.util.Collections.emptyList()));
-        model.addAttribute("shippedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.SHIPPED, java.util.Collections.emptyList()));
+        model.addAttribute("orderedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.ORDERED, List.of()));
+        model.addAttribute("shippedCarts", groupedCarts.getOrDefault(CartEntity.CartStatus.SHIPPED, List.of()));
         return "cart/view";
     }
 
