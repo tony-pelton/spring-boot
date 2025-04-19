@@ -12,15 +12,25 @@ spring:
   boot:
     admin:
       context-path: "/admin"
+    discovery:
+      enabled: true
+    convertor:
+      enabled: true
   h2:
     console:
       enabled: true
   application:
     name: services
-eureka:
-  client:
-    fetch-registry: false
-    register-with-eureka: false
+
+#eureka:
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: false
+
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
   endpoints:
     enabled-by-default: true
     web:

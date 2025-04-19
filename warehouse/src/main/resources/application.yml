@@ -22,6 +22,9 @@ spring:
   application:
     name: warehouse
 management:
+  endpoint:
+    health:
+      show-details: ALWAYS
   endpoints:
     enabled-by-default: true
     web:

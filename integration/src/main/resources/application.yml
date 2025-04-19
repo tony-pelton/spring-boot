@@ -3,6 +3,7 @@ apikey:
 
 server:
   port: 8101
+
 logging:
   pattern:
     correlation: "[%X{traceId:-},%X{spanId:-}] "
@@ -11,6 +12,7 @@ logging:
     web: DEBUG
 #    sql: DEBUG
     tomcat: DEBUG
+
 spring:
   task:
     scheduling:
@@ -23,7 +25,17 @@ spring:
     sql:
       init:
         continue-on-error: true
+
+#eureka:
+#  client:
+#    enabled: true
+#    register-with-eureka: true
+#    fetch-registry: true
+
 management:
+  endpoint:
+    health:
+      show-details: ALWAYS
   endpoints:
     enabled-by-default: true
     web:
