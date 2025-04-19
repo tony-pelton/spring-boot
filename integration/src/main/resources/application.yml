@@ -1,5 +1,6 @@
 
-apikey:
+application:
+  geminiApiKey:
 
 server:
   port: 8101

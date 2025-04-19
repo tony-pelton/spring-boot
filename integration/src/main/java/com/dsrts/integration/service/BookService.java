@@ -26,26 +26,19 @@ import java.util.Map;
 public class BookService {
 
     private final JdbcChannelMessageStore messageStore;
+    private final SummaryStrategyService summaryStrategyService;
     private final BooksServiceAPI webBooks;
     private final BooksServiceAPI warehouseBooks;
-    private final GeminiServiceAPI geminiServiceAPI;
-
-    private String apiKey;
-
-    @Value("${apikey}")
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
 
     public BookService(JdbcChannelMessageStore messageStore,
+                       SummaryStrategyService summaryStrategyService,
                        @Qualifier(RestClientConfiguration.REST_CLIENT_WEB_BOOKS) BooksServiceAPI webBooks,
-                       @Qualifier(RestClientConfiguration.REST_CLIENT_WAREHOUSE_BOOKS) BooksServiceAPI warehouseBooks,
-                       @Qualifier(RestClientConfiguration.REST_CLIENT_GEMINI) GeminiServiceAPI geminiServiceAPI)
+                       @Qualifier(RestClientConfiguration.REST_CLIENT_WAREHOUSE_BOOKS) BooksServiceAPI warehouseBooks)
     {
         this.messageStore = messageStore;
+        this.summaryStrategyService = summaryStrategyService;
         this.webBooks = webBooks;
         this.warehouseBooks = warehouseBooks;
-        this.geminiServiceAPI = geminiServiceAPI;
     }
 
     @Transactional
@@ -64,38 +57,13 @@ public class BookService {
         messageStore.addMessageToGroup(ChannelConfiguration.BOOK_WAREHOUSE_MESSAGE, message);
     }
 
-    private String getGeminiSummary(Map<String, String> payload) {
-        String title = payload.getOrDefault("title", "");
-        // Build Gemini API request POJO
-        GeminiContentRequest.Part part = new GeminiContentRequest.Part("Short summary for the book \"" + title + "\"");
-        GeminiContentRequest.Content content = new GeminiContentRequest.Content(List.of(part));
-        GeminiContentRequest geminiRequest = new GeminiContentRequest(List.of(content));
-        GeminiContentResponse geminiResponse = geminiServiceAPI.generateContent(geminiRequest, "application/json", apiKey);
-        String summary = "";
-        if (geminiResponse != null && geminiResponse.getCandidates() != null && !geminiResponse.getCandidates().isEmpty()) {
-            GeminiContentResponse.Candidate candidate = geminiResponse.getCandidates().get(0);
-            if (candidate != null && candidate.getContent() != null && candidate.getContent().getParts() != null && !candidate.getContent().getParts().isEmpty()) {
-                GeminiContentResponse.Part responsePart = candidate.getContent().getParts().get(0);
-                if (responsePart != null && responsePart.getText() != null) {
-                    summary = responsePart.getText();
-                }
-            }
-        }
-        return summary;
-    }
-
     @Transactional
     public boolean processBookWebMessage() {
         Message<Map<String,String>> message = (Message<Map<String,String>>)messageStore.pollMessageFromGroup(ChannelConfiguration.BOOK_WEB_MESSAGE);
         log.info("processBookWebMessage() : {}", message);
-        if (StringUtils.hasLength(apiKey) && message != null && message.getPayload() != null) {
+        if (message != null && message.getPayload() != null) {
             Map<String, String> payload = message.getPayload();
-            if (StringUtils.hasLength(apiKey)) {
-                String summary = getGeminiSummary(payload);
-                payload.put("summary", summary.trim());
-            } else {
-                payload.put("summary", "If you were using a Gemini API key, you'd see a cool summary here.");
-            }
+            payload.put("summary", summaryStrategyService.find(message).apply(message));
         }
         return processBookMessage(message, webBooks);
     }
