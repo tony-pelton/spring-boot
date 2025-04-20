@@ -1,83 +1,110 @@
-# Getting Started
+<div align="center">
 
-### Purpose
+<img src="https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot" alt="Spring Boot" />
+<img src="https://img.shields.io/badge/Eureka-Discovery-blue?logo=spring" alt="Eureka" />
+<img src="https://img.shields.io/badge/H2-Database-lightgrey?logo=databricks" alt="H2" />
+<img src="https://img.shields.io/badge/Admin-UI-orange?logo=monitor" alt="Admin UI" />
 
-A sample spring-boot application stack, trying to be an
-e-commerce bookstore.
+# 📚 Spring Boot Bookstore
 
-Trying to be as clean and best practice as possible,
-letting Spring starters do as much as possible.
+</div>
 
-This isn't meant to act as or adhere to microservice principles.
+---
 
-In fact, it might be over-engineered a little, or a little
-sub-optimal in spots etc. , but I wanted to have some things
-to play with.
+> **A modern, multi-module Spring Boot e-commerce sample stack.**
+> 
+> 🚀 *Best practices, rapid bootstrapping, and fun tech to play with!*
 
-There are also things (Eureka, client side load balancing,
-spring-boot admin) I've used here that would probably not be
-used in a modern horizontally scalable cloud stack.
+---
 
-But I think it also shows how you might not need all of that
-(more complicated discovery, fully stood up load balancers, some
-3rd party monitoring tools) with this kind of functionality already
-available in the spring-boot space, just to get something off
-the ground.
+## ✨ Purpose
 
-I wanted to make something that could be checked out to source and
-run right out of the box with nothing but an IDE, needing little
-to no fiddling out of the box.
+A sample Spring Boot application stack for an e-commerce bookstore, designed to be clean, best-practice, and ready to run out of the box with minimal setup. 
 
-### Servers
+> *Not strictly microservices, but a playground for Spring, Eureka, Admin, and more!*
 
-The individual servers provide capabilities for:
+---
 
-* web ui/storefront
-* database
-* boot admin ui
-* h2 console ui
-* spring integration
-* a warehouse service
-* a command line for operating the system
+## 🖥️ Servers & Components
 
-The database is currently in memory. When the servers start,
-schemas are created by hibernate, or SQL script etc, and data
-currently is loaded from the 'command' application.
+| Server/Module     | Capability              |
+|-------------------|-------------------------|
+| 🛒 `web`          | UI/Storefront           |
+| 🗄️ `services`    | H2 Database, Boot Admin |
+| 🛠️ `integration` | Spring Integration      |
+| 📦 `warehouse`    | Warehouse Service       |
+| 💻 `command`      | Command Line Bootstrap  |
 
-### Features
+- The database is **in-memory** (H2). Schemas are auto-created.
+- Data is loaded from the `command` application at startup.
 
-* spring-boot 3
-* Eureka discovery
-* spring-boot admin
-* h2 db server, with h2-console support
-* spring integration
-* spring command line
-* Maven multi-module, to kinda tie the room together.
-* Given a Gemini API key, the 'integration' service will enrich book data with a summary.
+---
 
-### How To
+## 🌟 Features
 
-First, start the various services.
+- 🟢 **Spring Boot 3**
+- 🛰️ **Eureka Discovery**
+- 🖥️ **Spring Boot Admin**
+- 🗄️ **H2 DB Server** (with H2 Console)
+- 🔗 **Spring Integration**
+- 💻 **Spring Command Line**
+- 📦 **Maven Multi-Module**
+- ✨ **Gemini API Integration** (book summaries if API key provided)
+- 🛡️ **Spring Security**
+- 🤖 **HAL Browser** (Hypermedia API explorer)
 
-This can be done a few different ways, by running the 'psvm'
-for each server, or by using the maven spring-boot plugin,
-and the spring-boot:run target in each module, or by using
-the spring-boot:run target from the parent Maven POM for each module.
+---
 
-The 'services' app needs to be started first, since it provides
-the discovery server, as well as the H2 database.
+## 🚦 How To Run
 
-Then the 'integration' server.
+1. **Start the services in order:**
 
-Then the 'warehouse' server.
+   ```sh
+   # Start the discovery server & H2 DB first
+   ./mvnw spring-boot:run -pl services
 
-Finally, the 'web' server, which is the storefront.
+   # Then the integration server
+   ./mvnw spring-boot:run -pl integration
 
-Then the 'command' server. For right now, this only needs to be running
-when, well, you need to issue commands. As of this writing, it has a
-couple of commands that are used to bootstrap some data into the system.
+   # Then the warehouse server
+   ./mvnw spring-boot:run -pl warehouse
 
-The command server knows two commands right now. Type 'help' to see them.
+   # Then the web server (storefront)
+   ./mvnw spring-boot:run -pl web
+
+   # (Optional) Start the command server to bootstrap data
+   ./mvnw spring-boot:run -pl command
+   ```
+
+   You can also run each server's `main()` directly from your IDE.
+
+2. **Access the UIs:**
+   - 🛒 Web Storefront: [http://localhost:8080](http://localhost:8080)
+   - 🌐 Eureka Discovery UI: [http://localhost:8081](http://localhost:8081)
+   - 🗄️ H2 Console: [http://localhost:8082/h2-console](http://localhost:8082/h2-console)
+   - 🖥️ Spring Boot Admin UI: [http://localhost:8081/admin](http://localhost:8081/admin)
+   - 🤖 HAL Browser (Web): [http://localhost:8080/api](http://localhost:8080/api)
+   - 🤖 HAL Browser (Warehouse): [http://localhost:8083/api](http://localhost:8083/api)
+
+3. **Command Server:**
+   - Only needs to be running when issuing commands (e.g., to bootstrap data).
+   - Type `help` in the CLI to see available commands.
+
+---
+
+## 📝 Notes
+
+- This project is intentionally a bit over-engineered for learning and experimentation.
+- It demonstrates how much you can do with Spring Boot's ecosystem without full-blown cloud infrastructure.
+- **Gemini API:** If you provide a Gemini API key, the integration service will enrich book data with AI-generated summaries.
+    - Set your API key in [`integration/src/main/resources/application.yml`](integration/src/main/resources/application.yml) under the `apikey` property.
+
+---
+
+<div align="center">
+    <sub>Made with ❤️ using Spring Boot, Eureka, and friends.</sub>
+</div>
+
 
 Once discovery is warmed up, run the 'load-books' and 'load-users' commands to
 to get some fake data loaded.
