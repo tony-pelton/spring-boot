@@ -1,7 +1,7 @@
 package com.dsrts.integration.configuration;
 
 import com.dsrts.integration.clients.BooksServiceAPI;
-
+import com.dsrts.integration.clients.CartServiceAPI;
 import com.dsrts.integration.clients.CustomersServiceAPI;
 import com.dsrts.integration.clients.GeminiServiceAPI;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +24,8 @@ public class RestClientConfiguration {
     public static final String REST_CLIENT_WEB_BOOKS = "restClientWebBooks";
     public static final String REST_CLIENT_WAREHOUSE_BOOKS = "restClientWarehouseBooks";
     public static final String REST_CLIENT_GEMINI = "restClientGemini";
+    public static final String REST_CLIENT_WEB_CARTS = "restClientWebCarts";
+    public static final String REST_CLIENT_WAREHOUSE_CARTS = "restClientWarehouseCarts";
 
     @LoadBalanced
     @Bean
@@ -46,6 +48,21 @@ public class RestClientConfiguration {
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
         requestFactory.setReadTimeout(Duration.ofSeconds(5));
         return requestFactory;
+    }
+
+    @Bean
+    public HttpServiceProxyFactory httpServiceProxyFactoryGemini(JdkClientHttpRequestFactory requestFactory) {
+        RestClient restClient = RestClient.builder()
+                .baseUrl("https://generativelanguage.googleapis.com/")
+                .requestFactory(requestFactory)
+                .build();
+        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+        return HttpServiceProxyFactory.builderFor(restClientAdapter).build();
+    }
+
+    @Bean(REST_CLIENT_GEMINI)
+    public GeminiServiceAPI restClientGemini(@Qualifier("httpServiceProxyFactoryGemini") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(GeminiServiceAPI.class);
     }
 
     @Bean
@@ -77,21 +94,6 @@ public class RestClientConfiguration {
                 .build();
     }
 
-    @Bean
-public HttpServiceProxyFactory httpServiceProxyFactoryGemini(JdkClientHttpRequestFactory requestFactory) {
-        RestClient restClient = RestClient.builder()
-                .baseUrl("https://generativelanguage.googleapis.com/")
-                .requestFactory(requestFactory)
-                .build();
-        RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
-        return HttpServiceProxyFactory.builderFor(restClientAdapter).build();
-    }
-
-    @Bean(REST_CLIENT_GEMINI)
-    public GeminiServiceAPI restClientGemini(@Qualifier("httpServiceProxyFactoryGemini") HttpServiceProxyFactory httpServiceProxyFactory) {
-        return httpServiceProxyFactory.createClient(GeminiServiceAPI.class);
-    }
-
     @Bean(REST_CLIENT_WAREHOUSE_BOOKS)
     public BooksServiceAPI restClientWarehouseBooks(@Qualifier("httpServiceProxyFactoryWarehouse") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(BooksServiceAPI.class);
@@ -110,6 +112,16 @@ public HttpServiceProxyFactory httpServiceProxyFactoryGemini(JdkClientHttpReques
     @Bean(REST_CLIENT_WEB_CUSTOMERS)
     public CustomersServiceAPI restClientWebCustomers(@Qualifier("httpServiceProxyFactoryWeb") HttpServiceProxyFactory httpServiceProxyFactory) {
         return httpServiceProxyFactory.createClient(CustomersServiceAPI.class);
+    }
+    
+    @Bean(REST_CLIENT_WEB_CARTS)
+    public CartServiceAPI restClientWebCarts(@Qualifier("httpServiceProxyFactoryWeb") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(CartServiceAPI.class);
+    }
+
+    @Bean(REST_CLIENT_WAREHOUSE_CARTS)
+    public CartServiceAPI restClientWarehouseCarts(@Qualifier("httpServiceProxyFactoryWarehouse") HttpServiceProxyFactory httpServiceProxyFactory) {
+        return httpServiceProxyFactory.createClient(CartServiceAPI.class);
     }
 
 }

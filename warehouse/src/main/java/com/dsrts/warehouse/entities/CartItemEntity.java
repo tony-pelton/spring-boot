@@ -3,36 +3,36 @@ package com.dsrts.warehouse.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "customers")
-public class CustomerEntity {
+@Table(name = "cart_item")
+public class CartItemEntity {
     @Id
     @GeneratedValue
     private Long id;
-    
-    @Column(nullable = false, unique = true)
-    private String email;
-    
+
+    @ManyToOne
+    private CartEntity cart;
+
+    @ManyToOne
+    private BookEntity book;
+
     @Column(nullable = false)
-    private String name;
-    
-    @OneToMany(mappedBy = "customer")
-    private Set<CartEntity> carts;
-    
+    private Integer qty;
+
     @CreatedDate
     @Column(nullable = false)
     private Instant createdOn;
-    
+
     @LastModifiedDate
     @Column(nullable = false)
     private Instant updatedOn;

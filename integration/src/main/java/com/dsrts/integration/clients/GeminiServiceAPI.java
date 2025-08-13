@@ -12,5 +12,7 @@ import com.dsrts.integration.clients.GeminiContentResponse;
 @HttpExchange("/v1beta/models/gemini-2.0-flash:generateContent")
 public interface GeminiServiceAPI {
     @PostExchange("?key={apiKey}")
-    GeminiContentResponse generateContent(@RequestBody GeminiContentRequest requestBody, @RequestHeader("Content-Type") String contentType, @PathVariable("apiKey") String apiKey);
+    GeminiContentResponse generateContent(@RequestBody GeminiContentRequest requestBody,
+                                          @RequestHeader("Content-Type") String contentType,
+                                          @PathVariable("apiKey") String apiKey);
 }
